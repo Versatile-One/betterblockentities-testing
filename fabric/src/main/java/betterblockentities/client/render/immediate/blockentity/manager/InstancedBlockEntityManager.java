@@ -254,13 +254,12 @@ public final class InstancedBlockEntityManager {
         public static final byte NONE   = 0;
         public static final byte CHEST  = 1;
         public static final byte SIGN   = 2;
-        public static final byte BED    = 3;
-        public static final byte SHULKER= 4;
-        public static final byte POT    = 5;
-        public static final byte BANNER = 6;
-        public static final byte BELL   = 7;
-        public static final byte CGS    = 8;
-        public static final byte SHELF  = 9;
-        public static final byte CAMPFIRE  = 10;
+        public static final byte SHULKER= 3;
+        public static final byte POT    = 4;
+        public static final byte BANNER = 5;
+        public static final byte BELL   = 6;
+        public static final byte CGS    = 7;
+        public static final byte SHELF  = 8;
+        public static final byte CAMPFIRE  = 9;
     }
 }

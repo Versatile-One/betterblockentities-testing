@@ -204,7 +204,6 @@ public class BBEConfig {
             ConfigCache.christmasChests = GenericConfigWrapper.MainStorage.useChristmasChestTextures();
             ConfigCache.optimizeChests = GenericConfigWrapper.MainStorage.optimizeChests();
             ConfigCache.optimizeDecoratedPots = GenericConfigWrapper.MainStorage.optimizeDecoratedPot();
-            ConfigCache.optimizeBeds = GenericConfigWrapper.MainStorage.optimizeBed();
             ConfigCache.optimizeShulker = GenericConfigWrapper.MainStorage.optimizeShulker();
             ConfigCache.bannerGraphics = GenericConfigWrapper.MainStorage.bannerGraphics();
             ConfigCache.optimizeBells = GenericConfigWrapper.MainStorage.optimizeBell();
@@ -220,7 +219,6 @@ public class BBEConfig {
             ConfigCache.optimizeSigns = false;
             ConfigCache.optimizeChests = false;
             ConfigCache.optimizeDecoratedPots = false;
-            ConfigCache.optimizeBeds = false;
             ConfigCache.optimizeShulker = false;
             ConfigCache.optimizeBells = false;
             ConfigCache.optimizeBanners = false;
@@ -243,7 +241,6 @@ public class BBEConfig {
         public static void rebuildFromConfig() {
             ENABLED[InstancedBlockEntityManager.OptKind.CHEST]   = ConfigCache.optimizeChests;
             ENABLED[InstancedBlockEntityManager.OptKind.SIGN]    = ConfigCache.optimizeSigns;
-            ENABLED[InstancedBlockEntityManager.OptKind.BED]     = ConfigCache.optimizeBeds;
             ENABLED[InstancedBlockEntityManager.OptKind.SHULKER] = ConfigCache.optimizeShulker;
             ENABLED[InstancedBlockEntityManager.OptKind.POT]     = ConfigCache.optimizeDecoratedPots;
             ENABLED[InstancedBlockEntityManager.OptKind.BANNER]  = ConfigCache.optimizeBanners;

@@ -9,7 +9,7 @@ import betterblockentities.client.render.immediate.blockentity.manager.Instanced
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,7 +32,7 @@ public abstract class ShulkerBoxBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.SHULKER);
 
         ext.supportedBlockEntity(
-            blockEntity.getType() == BlockEntityType.SHULKER_BOX
+            blockEntity.getType() == BlockEntityTypes.SHULKER_BOX
         );
     }
 

@@ -96,18 +96,6 @@ public class BBEBlockRenderer  {
             }
         }
 
-        else if (block instanceof CeilingHangingSignBlock || block instanceof WallHangingSignBlock) {
-            if (ConfigCache.optimizeSigns && !AltRenderers.hasRendererOverride(blockEntity.getType())) {
-                emitHangingSign(isFaceCulled, random, state, this.emitter);
-            }
-        }
-
-        else if (block instanceof StandingSignBlock || block instanceof WallSignBlock) {
-            if (ConfigCache.optimizeSigns && !AltRenderers.hasRendererOverride(blockEntity.getType())) {
-                emitSign(isFaceCulled, random, state, this.emitter);
-            }
-        }
-
         else if (block instanceof BellBlock) {
             if (ConfigCache.optimizeBells && !AltRenderers.hasRendererOverride(blockEntity.getType())) {
                 emitBell(isFaceCulled, random, this.emitter, blockEntity);
@@ -117,12 +105,6 @@ public class BBEBlockRenderer  {
         else if (block instanceof DecoratedPotBlock) {
             if (ConfigCache.optimizeDecoratedPots && !AltRenderers.hasRendererOverride(blockEntity.getType())) {
                 emitDecoratedPot(isFaceCulled, state, random, this.emitter, blockEntity);
-            }
-        }
-
-        else if (block instanceof BedBlock) {
-            if (ConfigCache.optimizeBeds && !AltRenderers.hasRendererOverride(blockEntity.getType())) {
-                emitBed(isFaceCulled, random, state, this.emitter);
             }
         }
 
@@ -193,98 +175,6 @@ public class BBEBlockRenderer  {
         emitter.clear();
     }
 
-    private void emitSign(Predicate<Direction> isFaceCulled, RandomSource random, BlockState state, BBEEmitter emitter) {
-        final ModelLayerLocation layerLocation = ModelResourceUtil.getSignLayer(state);
-        final Map<String, BlockStateModel> pairs = tryGetPairs(layerLocation);
-
-        if (pairs.isEmpty()) {
-            return;
-        }
-
-        ModelResourceUtil.collectMultiModelParts(PRIMARY_MODEL_PARTS, pairs.values(), random);
-
-        WoodType woodType = ((SignBlock) state.getBlock()).type();
-        SpriteId signMaterial = Sheets.getSignSprite(woodType);
-
-        final boolean isWallSign = !state.hasProperty(BlockStateProperties.ROTATION_16);
-
-        emitter.setMaterial(signMaterial);
-        emitter.setRenderType(ChunkSectionLayer.SOLID);
-
-        if (isWallSign) {
-            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            emitter.setTransformation(
-                    BBEStandingSignRenderer.TRANSFORMATIONS.wallTransformation(facing).body()
-            );
-        }
-        else {
-            int rotationSegment = state.getValue(BlockStateProperties.ROTATION_16);
-            emitter.setTransformation(
-                    BBEStandingSignRenderer.TRANSFORMATIONS.freeTransformations(rotationSegment).body()
-            );
-        }
-
-        emitter.emit(PRIMARY_MODEL_PARTS, isFaceCulled, emitter::buffer);
-
-        clearParts();
-        emitter.clear();
-    }
-
-    private void emitHangingSign(Predicate<Direction> isFaceCulled, RandomSource random, BlockState state, BBEEmitter emitter) {
-        final boolean isWall = !state.hasProperty(CeilingHangingSignBlock.ATTACHED);
-        final boolean attached = !isWall && state.getValue(CeilingHangingSignBlock.ATTACHED);
-
-        final ModelLayerLocation layerLocation = ModelResourceUtil.getHangingSignLayer(state);
-        final Map<String, BlockStateModel> pairs = tryGetPairs(layerLocation);
-
-        if (pairs.isEmpty()) {
-            return;
-        }
-
-        ModelResourceUtil.collectMultiModelParts(PRIMARY_MODEL_PARTS, pairs.values(), random);
-
-        WoodType woodType = ((SignBlock) state.getBlock()).type();
-        SpriteId signMaterial = Sheets.getHangingSignSprite(woodType);
-
-        emitter.setMaterial(signMaterial);
-        emitter.setRenderType(ChunkSectionLayer.CUTOUT);
-
-        /* invert chains to fix backface culling issue, this is shit but hey >) */
-        BlockStateModel chains = pairs.get(attached ? "vChains" : "normalChains");
-        if (chains != null) {
-            ModelResourceUtil.collectSingleModelParts(SECONDARY_MODEL_PARTS, chains, random);
-
-            if (!isWall) {
-                int rotationSegment = state.getValue(BlockStateProperties.ROTATION_16);
-                int oppositeSegment = (rotationSegment + 8) & 15;
-                emitter.setTransformation(
-                        BBEHangingSignRenderer.TRANSFORMATIONS.freeTransformations(oppositeSegment).body()
-                );
-            }
-            else {
-                Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite();
-                emitter.setTransformation(
-                        BBEHangingSignRenderer.TRANSFORMATIONS.wallTransformation(facing).body()
-                );
-            }
-            emitter.emit(SECONDARY_MODEL_PARTS, isFaceCulled, emitter::buffer);
-        }
-
-        if (!isWall) {
-            int rotationSegment = state.getValue(BlockStateProperties.ROTATION_16);
-            emitter.setTransformation(BBEHangingSignRenderer.TRANSFORMATIONS.freeTransformations(rotationSegment).body());
-        }
-        else {
-            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-            emitter.setTransformation(BBEHangingSignRenderer.TRANSFORMATIONS.wallTransformation(facing).body());
-        }
-
-        emitter.emit(PRIMARY_MODEL_PARTS, isFaceCulled, emitter::buffer);
-
-        clearParts();
-        emitter.clear();
-    }
-
     private void emitBell(Predicate<Direction> isFaceCulled, RandomSource random, BBEEmitter emitter, BlockEntity blockEntity) {
         if (!shouldRender((BlockEntityExt)blockEntity)) {
             return;
@@ -305,30 +195,6 @@ public class BBEBlockRenderer  {
 
         emitter.setMaterial(bellBodyMaterial);
         emitter.setRenderType(ChunkSectionLayer.SOLID);
-        emitter.emit(PRIMARY_MODEL_PARTS, isFaceCulled, emitter::buffer);
-
-        clearParts();
-        emitter.clear();
-    }
-
-    private void emitBed(Predicate<Direction> isFaceCulled, RandomSource random, BlockState state, BBEEmitter emitter) {
-        final ModelLayerLocation layer = ModelResourceUtil.getBedLayer(state);
-        final Map<String, BlockStateModel> pairs = tryGetPairs(layer);
-
-        if (pairs.isEmpty()) {
-            return;
-        }
-
-        ModelResourceUtil.collectMultiModelParts(PRIMARY_MODEL_PARTS, pairs.values(), random);
-
-        DyeColor color = ((BedBlock) state.getBlock()).getColor();
-        SpriteId bedMaterial = Sheets.getBedSprite(color);
-
-        Direction facing = state.getValue(BedBlock.FACING);
-
-        emitter.setMaterial(bedMaterial);
-        emitter.setRenderType(ChunkSectionLayer.SOLID);
-        emitter.setTransformation(BBEBedRenderer.modelTransform(facing));
         emitter.emit(PRIMARY_MODEL_PARTS, isFaceCulled, emitter::buffer);
 
         clearParts();

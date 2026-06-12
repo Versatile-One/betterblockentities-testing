@@ -22,9 +22,6 @@
   "bbe.config.storage.main.optimize.bell": "Optimera Klocka",
   "bbe.config.storage.main.optimize.bell.tooltip": "Används för att stänga AV eller PÅ optimeringar för klockor",
 
-  "bbe.config.storage.main.optimize.bed": "Optimera Säng",
-  "bbe.config.storage.main.optimize.bed.tooltip": "Används för att stänga AV eller PÅ optimeringar för sängar",
-
   "bbe.config.storage.main.animation.chest": "Animera kista",
   "bbe.config.storage.main.animation.chest.tooltip": "Används för att stänga AV eller PÅ animationer för kistor",
 

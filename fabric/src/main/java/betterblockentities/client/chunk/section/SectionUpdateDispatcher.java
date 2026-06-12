@@ -7,8 +7,9 @@ import betterblockentities.client.tasks.TaskScheduler;
 /* minecraft */
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+
+/* sodium */
+import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
 
 /**
  * Utility class for executing render section rebuild tasks
@@ -17,11 +18,16 @@ public class SectionUpdateDispatcher {
     public static void queueRebuildAtBlockPos(BlockPos pos) {
         try {
             TaskScheduler.schedule(() -> {
-                Level level = Minecraft.getInstance().level;
-                if (level == null) return;
+                if (Minecraft.getInstance().level == null) return;
 
-                BlockState state = level.getBlockState(pos);
-                Minecraft.getInstance().levelRenderer.blockChanged(level, pos, state, state, 8);
+                SodiumWorldRenderer sodiumWorldRenderer = SodiumWorldRenderer.instanceNullable();
+                if (sodiumWorldRenderer != null) {
+                    sodiumWorldRenderer.scheduleRebuildForBlockArea(
+                            pos.getX(), pos.getY(), pos.getZ(),
+                            pos.getX(), pos.getY(), pos.getZ(),
+                            false
+                    );
+                }
             });
         } catch (Exception e) {
             BBE.getLogger().error("Failed to rebuild terrain section!", e);
@@ -39,7 +45,10 @@ public class SectionUpdateDispatcher {
 
     public static void queueUpdateAllSections() {
         try {
-            Minecraft.getInstance().levelRenderer.allChanged();
+            SodiumWorldRenderer sodiumWorldRenderer = SodiumWorldRenderer.instanceNullable();
+            if (sodiumWorldRenderer != null) {
+                sodiumWorldRenderer.scheduleTerrainUpdate();
+            }
         } catch (Exception e) {
             BBE.getLogger().error("Reloading terrain sections failed!", e);
         }

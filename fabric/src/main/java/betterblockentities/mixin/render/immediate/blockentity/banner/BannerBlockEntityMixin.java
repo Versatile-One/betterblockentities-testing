@@ -8,7 +8,7 @@ import betterblockentities.client.render.immediate.blockentity.misc.RenderingMod
 /* minecraft */
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 /* mixin */
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,7 @@ public class BannerBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.BANNER);
 
         ext.supportedBlockEntity(
-            blockEntity.getType() == BlockEntityType.BANNER
+            blockEntity.getType() == BlockEntityTypes.BANNER
         );
     }
 }

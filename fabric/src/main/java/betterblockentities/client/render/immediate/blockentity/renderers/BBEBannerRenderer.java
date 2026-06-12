@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.blockentity.WallAndGroundTransformations;
 import net.minecraft.client.renderer.blockentity.state.BannerRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
@@ -42,7 +41,6 @@ import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
 
 /* java/misc */
-import java.util.function.Consumer;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -150,7 +148,7 @@ public class BBEBannerRenderer implements BlockEntityRenderer<BannerBlockEntity,
 
         BlockEntityRenderStateExt stateExt = (BlockEntityRenderStateExt)state;
 
-        boolean managed = OverlayRenderer.manageCrumblingOverlay(stateExt.blockEntity(), poseStack, model, Unit.INSTANCE, lightCoords, overlayCoords, outlineColor, breakProgress);
+        boolean managed = OverlayRenderer.manageCrumblingOverlay(stateExt.blockEntity(), collector, poseStack, model, Unit.INSTANCE, lightCoords, overlayCoords, outlineColor, breakProgress);
         if (!managed) {
             collector.submitModel(model, Unit.INSTANCE, poseStack, lightCoords, overlayCoords, -1, sprite, sprites, outlineColor, breakProgress);
         }
@@ -160,7 +158,7 @@ public class BBEBannerRenderer implements BlockEntityRenderer<BannerBlockEntity,
         float rotClamped = Math.clamp(rot, -4.05f, -0.45f);
         flagModel.root().getChild("flag").xRot = (float)Math.toRadians(rotClamped);
 
-        boolean managed2 = OverlayRenderer.manageCrumblingOverlay(stateExt.blockEntity(), poseStack, flagModel, null, lightCoords, overlayCoords, outlineColor, breakProgress);
+        boolean managed2 = OverlayRenderer.manageCrumblingOverlay(stateExt.blockEntity(), collector, poseStack, flagModel, staticCrumblingOverlayPhase(), lightCoords, overlayCoords, outlineColor, breakProgress);
         if (!managed2) {
             collector.submitModel(flagModel, phase, poseStack, lightCoords, overlayCoords, -1, sprite, sprites, outlineColor, breakProgress);
         }
@@ -223,6 +221,12 @@ public class BBEBannerRenderer implements BlockEntityRenderer<BannerBlockEntity,
 
     private static Transformation modelTransformation(float angle) {
         return new Transformation(MODEL_TRANSLATION, Axis.YP.rotationDegrees(-angle), MODEL_SCALE, null);
+    }
+
+    private static float staticCrumblingOverlayPhase() {
+        float targetDegrees = Math.clamp(-0.45F * ConfigCache.bannerPose, -4.05F, -0.45F);
+        float cosine = Math.clamp((targetDegrees + 2.25F) / 1.8F, -1.0F, 1.0F);
+        return (float)(Math.acos(cosine) / (Math.PI * 2.0D));
     }
 
     private static Transformation createGroundTransformation(int segment) {

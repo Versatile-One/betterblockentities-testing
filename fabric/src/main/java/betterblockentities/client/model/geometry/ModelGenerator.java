@@ -65,11 +65,6 @@ public class ModelGenerator {
             setupBell(layer, root, stack);
         }
 
-        else if (layer == ModelLayers.BED_HEAD ||
-                 layer == ModelLayers.BED_FOOT) {
-            setupBed(layer, root, stack);
-        }
-
         else if (layer == ModelLayers.DECORATED_POT_BASE   ||
                  layer == ModelLayers.DECORATED_POT_SIDES) {
             setupDecoratedPot(layer, root, stack);
@@ -80,17 +75,6 @@ public class ModelGenerator {
                  layer == ModelLayers.STANDING_BANNER_FLAG ||
                  layer == ModelLayers.WALL_BANNER_FLAG) {
             setupBanners(layer, root, stack);
-        }
-
-        else if (layer == GeometryRegistry.SupportedVanillaModelLayers.SIGN_STANDING ||
-                layer == GeometryRegistry.SupportedVanillaModelLayers.SIGN_WALL) {
-            setupSigns(layer, root, stack);
-        }
-
-        else if (layer == GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_WALL    ||
-                 layer == GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_CEILING ||
-                 layer == GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_CEILING_MIDDLE) {
-            setupHangingSigns(layer, root, stack);
         }
 
         else if (layer == ModelLayers.COPPER_GOLEM         ||
@@ -113,14 +97,6 @@ public class ModelGenerator {
         GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.BELL_BODY, stack);
     }
 
-    private static void setupBed(ModelLayerLocation layer, ModelPart root, PoseStack stack) {
-        GeometryRegistry.cacheGeometry(layer, root,
-                layer == ModelLayers.BED_HEAD ?
-                        GeometryRegistry.PlaceHolderSpriteIdentifiers.BED_HEAD :
-                        GeometryRegistry.PlaceHolderSpriteIdentifiers.BED_FOOT,
-                stack);
-    }
-
     private static void setupDecoratedPot(ModelLayerLocation layer, ModelPart root, PoseStack stack) {
         GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.DECORATED_POT_BASE, stack);
     }
@@ -135,18 +111,6 @@ public class ModelGenerator {
             flag.xRot = (float)Math.toRadians(rotClamped);
         }
         GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.BANNER, stack);
-    }
-
-    private static void setupSigns(ModelLayerLocation layer, ModelPart root, PoseStack stack) {
-        if (layer == GeometryRegistry.SupportedVanillaModelLayers.SIGN_STANDING) {
-            GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.SIGN, stack);
-        } else if (layer == GeometryRegistry.SupportedVanillaModelLayers.SIGN_WALL) {
-            GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.SIGN, stack);
-        }
-    }
-
-    private static void setupHangingSigns(ModelLayerLocation layer, ModelPart root, PoseStack stack) {
-        GeometryRegistry.cacheGeometry(layer, root, GeometryRegistry.PlaceHolderSpriteIdentifiers.HANGING_SIGN, stack);
     }
 
     private static void setupCopperGolemStatue(ModelLayerLocation layer, ModelPart root, PoseStack stack) {

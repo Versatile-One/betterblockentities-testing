@@ -1,5 +1,8 @@
 package betterblockentities.client.render.immediate.blockentity.renderers;
 
+/* local */
+import betterblockentities.client.model.MaterialSelector;
+
 /* minecraft */
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -13,7 +16,6 @@ import net.minecraft.client.renderer.blockentity.state.DecoratedPotRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,7 +26,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
-import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.phys.Vec3;
 
@@ -35,10 +36,8 @@ import com.mojang.math.Transformation;
 
 /* java/misc */
 import org.joml.Matrix4f;
-import org.joml.Vector3fc;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPotBlockEntity, DecoratedPotRenderState> {
     private static final Map<Direction, Transformation> TRANSFORMATIONS = Util.makeEnumMap(Direction.class, BBEDecoratedPotRenderer::createModelTransformation);
@@ -69,13 +68,7 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
     }
 
     private static SpriteId getSideSprite(Optional<Item> item) {
-        if (item.isPresent()) {
-            SpriteId result = Sheets.getDecoratedPotSprite(DecoratedPotPatterns.getPatternFromItem((Item)item.get()));
-            if (result != null) {
-                return result;
-            }
-        }
-        return Sheets.DECORATED_POT_SIDE;
+        return MaterialSelector.getDPSideMaterial(item);
     }
 
     public DecoratedPotRenderState createRenderState() {
@@ -127,9 +120,9 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, PotDecorations decorations, int outlineColor) {
         RenderType renderType = Sheets.DECORATED_POT_BASE.renderType(RenderTypes::entitySolid);
         TextureAtlasSprite sprite = this.sprites.get(Sheets.DECORATED_POT_BASE);
-        submitNodeCollector.submitModelPart(this.neck, poseStack, renderType, lightCoords, overlayCoords, sprite, false, false, -1, null, outlineColor);
-        submitNodeCollector.submitModelPart(this.top, poseStack, renderType, lightCoords, overlayCoords, sprite, false, false, -1, null, outlineColor);
-        submitNodeCollector.submitModelPart(this.bottom, poseStack, renderType, lightCoords, overlayCoords, sprite, false, false, -1, null, outlineColor);
+        submitNodeCollector.submitModelPart(this.neck, poseStack, renderType, lightCoords, overlayCoords, sprite, -1, null, outlineColor);
+        submitNodeCollector.submitModelPart(this.top, poseStack, renderType, lightCoords, overlayCoords, sprite, -1, null, outlineColor);
+        submitNodeCollector.submitModelPart(this.bottom, poseStack, renderType, lightCoords, overlayCoords, sprite, -1, null, outlineColor);
         SpriteId frontSprite = getSideSprite(decorations.front());
         submitNodeCollector.submitModelPart(
                 this.frontSide,
@@ -138,8 +131,6 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
                 lightCoords,
                 overlayCoords,
                 this.sprites.get(frontSprite),
-                false,
-                false,
                 -1,
                 null,
                 outlineColor
@@ -152,8 +143,6 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
                 lightCoords,
                 overlayCoords,
                 this.sprites.get(backSprite),
-                false,
-                false,
                 -1,
                 null,
                 outlineColor
@@ -166,8 +155,6 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
                 lightCoords,
                 overlayCoords,
                 this.sprites.get(leftSprite),
-                false,
-                false,
                 -1,
                 null,
                 outlineColor
@@ -180,8 +167,6 @@ public class BBEDecoratedPotRenderer implements BlockEntityRenderer<DecoratedPot
                 lightCoords,
                 overlayCoords,
                 this.sprites.get(rightSprite),
-                false,
-                false,
                 -1,
                 null,
                 outlineColor

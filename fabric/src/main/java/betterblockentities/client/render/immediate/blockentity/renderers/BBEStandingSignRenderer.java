@@ -1,40 +1,21 @@
 package betterblockentities.client.render.immediate.blockentity.renderers;
 
 /* minecraft */
-import betterblockentities.client.BBE;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.WallAndGroundTransformations;
 import net.minecraft.client.renderer.blockentity.state.SignRenderState;
 import net.minecraft.client.renderer.blockentity.state.StandingSignRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
-import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.PlainSignBlock;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
-import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.phys.Vec3;
 
 /* mojang */
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
 
@@ -42,29 +23,15 @@ import com.mojang.math.Transformation;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import java.util.Map;
-import com.google.common.collect.ImmutableMap;
 
 public class BBEStandingSignRenderer extends BBEAbstractSignRenderer<StandingSignRenderState> {
     private static final Vector3fc TEXT_OFFSET = new Vector3f(0.0F, 0.33333334F, 0.046666667F);
     public static final WallAndGroundTransformations<SignRenderState.SignTransformations> TRANSFORMATIONS = new WallAndGroundTransformations<>(
             BBEStandingSignRenderer::createWallTransformation, BBEStandingSignRenderer::createGroundTransformation, 16
     );
-    private final Map<WoodType, BBEStandingSignRenderer.Models> signModels;
 
     public BBEStandingSignRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
-
-        /* filter out invalid sign types to prevent crashes, types in general are irrelevant in our render context */
-        this.signModels = WoodType.values()
-                .<Map.Entry<WoodType, BBEStandingSignRenderer.Models>>mapMulti((woodType, consumer) -> {
-                    BBEStandingSignRenderer.Models models = BBEStandingSignRenderer.Models.create(context, woodType);
-
-                    if (models.standing() != null && models.wall() != null) {
-                        consumer.accept(Map.entry(woodType, models));
-                    }
-                })
-                .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public StandingSignRenderState createRenderState() {
@@ -82,15 +49,6 @@ public class BBEStandingSignRenderer extends BBEAbstractSignRenderer<StandingSig
         }
     }
 
-    protected Model.Simple getSignModel(StandingSignRenderState state) {
-        return (this.signModels.get(state.woodType)).get(state.attachmentType);
-    }
-
-    @Override
-    protected SpriteId getSignSprite(WoodType type) {
-        return Sheets.getSignSprite(type);
-    }
-
     private static Matrix4f baseTransformation(float angle, PlainSignBlock.Attachment attachmentType) {
         Matrix4f result = new Matrix4f().translate(0.5F, 0.5F, 0.5F).rotate(Axis.YP.rotationDegrees(-angle));
         if (attachmentType == PlainSignBlock.Attachment.WALL) {
@@ -98,10 +56,6 @@ public class BBEStandingSignRenderer extends BBEAbstractSignRenderer<StandingSig
         }
 
         return result;
-    }
-
-    private static Transformation bodyTransformation(PlainSignBlock.Attachment attachmentType, float angle) {
-        return new Transformation(baseTransformation(angle, attachmentType).scale(0.6666667F, -0.6666667F, -0.6666667F));
     }
 
     private static Transformation textTransformation(PlainSignBlock.Attachment attachmentType, float angle, boolean isFrontText) {
@@ -114,9 +68,7 @@ public class BBEStandingSignRenderer extends BBEAbstractSignRenderer<StandingSig
     }
 
     private static SignRenderState.SignTransformations createTransformations(PlainSignBlock.Attachment attachmentType, float angle) {
-        return new SignRenderState.SignTransformations(
-                bodyTransformation(attachmentType, angle), textTransformation(attachmentType, angle, true), textTransformation(attachmentType, angle, false)
-        );
+        return new SignRenderState.SignTransformations(textTransformation(attachmentType, angle, true), textTransformation(attachmentType, angle, false));
     }
 
     private static SignRenderState.SignTransformations createGroundTransformation(int segment) {
@@ -125,52 +77,5 @@ public class BBEStandingSignRenderer extends BBEAbstractSignRenderer<StandingSig
 
     private static SignRenderState.SignTransformations createWallTransformation(Direction direction) {
         return createTransformations(PlainSignBlock.Attachment.WALL, direction.toYRot());
-    }
-
-    public static Model.Simple createSignModel(EntityModelSet entityModelSet, WoodType woodType, PlainSignBlock.Attachment attachment) {
-        ModelLayerLocation layer = switch (attachment) {
-            case GROUND -> createStandingSignModelName(woodType);
-            case WALL -> createWallSignModelName(woodType);
-        };
-
-        if (layer != null) {
-            return new Model.Simple(entityModelSet.bakeLayer(layer), RenderTypes::entityCutout);
-        }
-        return null;
-    }
-
-    public static ModelLayerLocation createStandingSignModelName(WoodType type) {
-        return createLocation("sign/standing/" + type.name(), "main");
-    }
-
-    public static ModelLayerLocation createWallSignModelName(WoodType type) {
-        return createLocation("sign/wall/" + type.name(), "main");
-    }
-
-    private static ModelLayerLocation createLocation(String model, String layerId) {
-        ModelLayerLocation layer;
-        try {
-            layer = new ModelLayerLocation(Identifier.withDefaultNamespace(model), layerId);
-            return layer;
-        } catch (Exception e) {
-            BBE.getLogger().error("Error creating model for {}", model);
-            return null;
-        }
-    }
-
-    private record Models(Model.Simple standing, Model.Simple wall) {
-        public static BBEStandingSignRenderer.Models create(BlockEntityRendererProvider.Context context, WoodType type) {
-            return new BBEStandingSignRenderer.Models(
-                    BBEStandingSignRenderer.createSignModel(context.entityModelSet(), type, PlainSignBlock.Attachment.GROUND),
-                    BBEStandingSignRenderer.createSignModel(context.entityModelSet(), type, PlainSignBlock.Attachment.WALL)
-            );
-        }
-
-        public Model.Simple get(PlainSignBlock.Attachment attachmentType) {
-            return switch (attachmentType) {
-                case GROUND -> this.standing;
-                case WALL -> this.wall;
-            };
-        }
     }
 }

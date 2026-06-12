@@ -8,6 +8,7 @@ import betterblockentities.client.render.immediate.blockentity.renderers.*;
 /* minecraft */
 import net.minecraft.client.renderer.blockentity.*;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 
 /* mixin */
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,92 +29,84 @@ public class BlockEntityRenderersMixin {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Inject(method = "createEntityRenderers", at = @At("HEAD"))
     private static void replaceVanillaRenderers(CallbackInfoReturnable<Map<BlockEntityType<?>, BlockEntityRenderer<?, ?>>> cir) {
-        if (AltRenderers.hasRendererOverride(BlockEntityType.SIGN)) {
-            removeRegistration(BlockEntityType.SIGN);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.SIGN)) {
+            removeRegistration(BlockEntityTypes.SIGN);
         } else {
             BlockEntityRendererProvider r0 =
                     ConfigCache.optimizeSigns ? BBEStandingSignRenderer::new : StandingSignRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.SIGN, r0);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.SIGN, r0);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.HANGING_SIGN)) {
-            removeRegistration(BlockEntityType.HANGING_SIGN);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.HANGING_SIGN)) {
+            removeRegistration(BlockEntityTypes.HANGING_SIGN);
         } else {
             BlockEntityRendererProvider r1 =
                     ConfigCache.optimizeSigns ? BBEHangingSignRenderer::new : HangingSignRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.HANGING_SIGN, r1);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.HANGING_SIGN, r1);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.CHEST)) {
-            removeRegistration(BlockEntityType.CHEST);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.CHEST)) {
+            removeRegistration(BlockEntityTypes.CHEST);
         } else {
             BlockEntityRendererProvider r2 =
                     ConfigCache.optimizeChests ? BBEChestRenderer::new : ChestRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.CHEST, r2);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.CHEST, r2);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.ENDER_CHEST)) {
-            removeRegistration(BlockEntityType.ENDER_CHEST);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.ENDER_CHEST)) {
+            removeRegistration(BlockEntityTypes.ENDER_CHEST);
         } else {
             BlockEntityRendererProvider r3 =
                     ConfigCache.optimizeChests ? BBEChestRenderer::new : ChestRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.ENDER_CHEST, r3);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.ENDER_CHEST, r3);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.TRAPPED_CHEST)) {
-            removeRegistration(BlockEntityType.TRAPPED_CHEST);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.TRAPPED_CHEST)) {
+            removeRegistration(BlockEntityTypes.TRAPPED_CHEST);
         } else {
             BlockEntityRendererProvider r4 =
                     ConfigCache.optimizeChests ? BBEChestRenderer::new : ChestRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.TRAPPED_CHEST, r4);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.TRAPPED_CHEST, r4);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.BANNER)) {
-            removeRegistration(BlockEntityType.BANNER);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.BANNER)) {
+            removeRegistration(BlockEntityTypes.BANNER);
         } else {
             BlockEntityRendererProvider r5 =
                     ConfigCache.optimizeBanners ? BBEBannerRenderer::new : BannerRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.BANNER, r5);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.BANNER, r5);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.SHULKER_BOX)) {
-            removeRegistration(BlockEntityType.SHULKER_BOX);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.SHULKER_BOX)) {
+            removeRegistration(BlockEntityTypes.SHULKER_BOX);
         } else {
             BlockEntityRendererProvider r6 =
                     ConfigCache.optimizeShulker ? BBEShulkerBoxRenderer::new : ShulkerBoxRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.SHULKER_BOX, r6);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.SHULKER_BOX, r6);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.BED)) {
-            removeRegistration(BlockEntityType.BED);
-        } else {
-            BlockEntityRendererProvider r7 =
-                    ConfigCache.optimizeBeds ? BBEBedRenderer::new : BedRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.BED, r7);
-        }
-
-        if (AltRenderers.hasRendererOverride(BlockEntityType.BELL)) {
-            removeRegistration(BlockEntityType.BELL);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.BELL)) {
+            removeRegistration(BlockEntityTypes.BELL);
         } else {
             BlockEntityRendererProvider r8 =
                     ConfigCache.optimizeBells ? BBEBellRenderer::new : BellRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.BELL, r8);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.BELL, r8);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.DECORATED_POT)) {
-            removeRegistration(BlockEntityType.DECORATED_POT);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.DECORATED_POT)) {
+            removeRegistration(BlockEntityTypes.DECORATED_POT);
         } else {
             BlockEntityRendererProvider r9 =
                     ConfigCache.optimizeDecoratedPots ? BBEDecoratedPotRenderer::new : DecoratedPotRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.DECORATED_POT, r9);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.DECORATED_POT, r9);
         }
 
-        if (AltRenderers.hasRendererOverride(BlockEntityType.COPPER_GOLEM_STATUE)) {
-            removeRegistration(BlockEntityType.COPPER_GOLEM_STATUE);
+        if (AltRenderers.hasRendererOverride(BlockEntityTypes.COPPER_GOLEM_STATUE)) {
+            removeRegistration(BlockEntityTypes.COPPER_GOLEM_STATUE);
         } else {
             BlockEntityRendererProvider r10 =
                     ConfigCache.optimizeCopperGolemStatue ? BBECopperGolemStatueBlockRenderer::new : CopperGolemStatueBlockRenderer::new;
-            BlockEntityRenderersAccessor.invokeRegister(BlockEntityType.COPPER_GOLEM_STATUE, r10);
+            BlockEntityRenderersAccessor.invokeRegister(BlockEntityTypes.COPPER_GOLEM_STATUE, r10);
         }
     }
 

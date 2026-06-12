@@ -6,7 +6,7 @@ import betterblockentities.client.render.immediate.blockentity.manager.Instanced
 
 /* minecraft */
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 /* mixin */
@@ -27,8 +27,8 @@ public class SignBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.SIGN);
 
         ext.supportedBlockEntity(
-                blockEntity.getType() == BlockEntityType.SIGN ||
-                blockEntity.getType() == BlockEntityType.HANGING_SIGN
+                blockEntity.getType() == BlockEntityTypes.SIGN ||
+                blockEntity.getType() == BlockEntityTypes.HANGING_SIGN
         );
     }
 }

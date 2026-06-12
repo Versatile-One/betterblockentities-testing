@@ -20,7 +20,6 @@ public class GenericConfigWrapper {
         public static boolean optimizeDecoratedPot() {return getGenericBooleanOption("optimize.decoratedpot");}
         public static boolean optimizeBanner() {return getGenericBooleanOption("optimize.banner");}
         public static boolean optimizeBell() { return getGenericBooleanOption("optimize.bell"); }
-        public static boolean optimizeBed() {return getGenericBooleanOption("optimize.bed");}
         public static boolean optimizeCopperGolemStatue() {return getGenericBooleanOption("optimize.copper_golem_statue");}
         public static boolean optimizeShelf() {return getGenericBooleanOption("optimize.shelf");}
         public static boolean optimizeCampfire() {return getGenericBooleanOption("optimize.campfire");}

@@ -7,6 +7,7 @@ import betterblockentities.client.tasks.ManagerTasks;
 
 /* minecraft */
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.renderer.PlayerSkinRenderCache;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -24,32 +25,29 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
     @Shadow @Final public Font font;
     @Shadow @Final private ModelManager modelManager;
-    @Shadow @Final private BlockModelResolver blockModelResolver;
     @Shadow @Final private ItemModelResolver itemModelResolver;
     @Shadow @Final private EntityRenderDispatcher entityRenderDispatcher;
     @Shadow @Final private AtlasManager atlasManager;
     @Shadow @Final private PlayerSkinRenderCache playerSkinRenderCache;
     @Shadow @Final private ReloadableResourceManager resourceManager;
 
-    @WrapOperation(
+    @Inject(
             method = "<init>(Lnet/minecraft/client/main/GameConfig;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "com/mojang/blaze3d/vertex/Tesselator.init ()V"
+                    target = "Lnet/minecraft/server/packs/resources/ReloadableResourceManager;createReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/server/packs/resources/ReloadInstance;"
             )
     )
-    void registerDispatchListener(Operation<Void> original) {
+    void registerDispatchListener(GameConfig gameConfig, CallbackInfo ci) {
         BBE.GlobalScope.altRenderDispatcher = new AltRenderDispatcher(
                 this.font,
                 this.modelManager.entityModels(),
-                this.blockModelResolver,
+                new BlockModelResolver(this.modelManager),
                 this.itemModelResolver,
                 this.entityRenderDispatcher,
                 this.atlasManager,
@@ -57,8 +55,6 @@ public abstract class MinecraftMixin {
         );
 
         this.resourceManager.registerReloadListener(BBE.GlobalScope.altRenderDispatcher);
-
-        original.call();
     }
 
     @Inject(method = "tick", at = @At("TAIL"))

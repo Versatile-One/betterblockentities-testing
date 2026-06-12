@@ -9,7 +9,7 @@ import betterblockentities.client.render.immediate.blockentity.manager.Instanced
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,9 +32,9 @@ public abstract class EnderChestBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.CHEST);
 
         ext.supportedBlockEntity(
-                blockEntity.getType() == BlockEntityType.CHEST         ||
-                blockEntity.getType() == BlockEntityType.TRAPPED_CHEST ||
-                blockEntity.getType() == BlockEntityType.ENDER_CHEST
+                blockEntity.getType() == BlockEntityTypes.CHEST         ||
+                blockEntity.getType() == BlockEntityTypes.TRAPPED_CHEST ||
+                blockEntity.getType() == BlockEntityTypes.ENDER_CHEST
         );
     }
 

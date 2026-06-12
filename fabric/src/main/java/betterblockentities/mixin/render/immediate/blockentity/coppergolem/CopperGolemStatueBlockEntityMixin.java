@@ -7,7 +7,7 @@ import betterblockentities.client.render.immediate.blockentity.misc.RenderingMod
 
 /* minecraft */
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.CopperGolemStatueBlockEntity;
 
 /* mixin */
@@ -28,7 +28,7 @@ public class CopperGolemStatueBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.CGS);
 
         ext.supportedBlockEntity(
-            blockEntity.getType() == BlockEntityType.COPPER_GOLEM_STATUE
+            blockEntity.getType() == BlockEntityTypes.COPPER_GOLEM_STATUE
         );
     }
 }
