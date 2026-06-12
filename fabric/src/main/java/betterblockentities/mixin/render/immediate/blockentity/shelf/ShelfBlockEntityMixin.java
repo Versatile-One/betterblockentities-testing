@@ -6,7 +6,7 @@ import betterblockentities.client.render.immediate.blockentity.manager.Instanced
 
 /* minecraft */
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.ShelfBlockEntity;
 
 /* mixin */
@@ -27,7 +27,7 @@ public class ShelfBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.SHELF);
 
         ext.supportedBlockEntity(
-            blockEntity.getType() == BlockEntityType.SHELF
+            blockEntity.getType() == BlockEntityTypes.SHELF
         );
     }
 }

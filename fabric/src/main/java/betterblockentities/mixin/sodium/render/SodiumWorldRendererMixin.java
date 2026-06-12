@@ -44,7 +44,7 @@ public abstract class SodiumWorldRendererMixin {
      * something similar, our API is available for just that
      */
     @Overwrite
-    private void extractBlockEntity(BlockEntity blockEntity, PoseStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockDestructionProgress>> progression, LevelRenderState levelRenderState) {
+    private void extractBlockEntity(BlockEntity blockEntity, PoseStack poseStack, Camera camera, float tickDelta, Long2ObjectMap<SortedSet<BlockDestructionProgress>> progression, LevelRenderState levelRenderState, boolean globalBlockEntity) {
         final BlockPos blockPos = blockEntity.getBlockPos();
         final SortedSet<BlockDestructionProgress> sortedSet = progression.get(blockPos.asLong());
 
@@ -84,7 +84,7 @@ public abstract class SodiumWorldRendererMixin {
 
         /* extract the default registered render state */
         BlockEntityRenderState blockEntityRenderState =
-                Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(blockEntity, tickDelta, crumblingOverlay);
+                Minecraft.getInstance().getBlockEntityRenderDispatcher().tryExtractRenderState(blockEntity, tickDelta, crumblingOverlay, globalBlockEntity);
         if (blockEntityRenderState != null) {
             levelRenderState.blockEntityRenderStates.add(blockEntityRenderState);
         }

@@ -22,9 +22,6 @@
   "bbe.config.storage.main.optimize.bell" :  "Оптимизация колоколов",
   "bbe.config.storage.main.optimize.bell.tooltip" : "Используется для включения или выключения оптимизации колоколов",
 
-  "bbe.config.storage.main.optimize.bed" : "Оптимизация кроватей",
-  "bbe.config.storage.main.optimize.bed.tooltip" : "Используется для включения или выключения оптимизации кроватей",
-
   "bbe.config.storage.main.animation.chest" : "Анимация сундуков",
   "bbe.config.storage.main.animation.chest.tooltip" : "Используется для включения или выключения анимаций сундуков",
 

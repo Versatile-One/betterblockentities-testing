@@ -6,74 +6,54 @@ import betterblockentities.client.render.immediate.blockentity.misc.RenderingMod
 
 /* minecraft */
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
+import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 /* mojang */
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
-/* java/misc */
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 
 public final class OverlayRenderer {
     private OverlayRenderer() { }
 
-    public static <S> boolean manageCrumblingOverlay(BlockEntity blockEntity, PoseStack poseStack, Model<? super S> model, S state, int light, int overlayCoords, int tint, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+    public static <S> boolean manageCrumblingOverlay(BlockEntity blockEntity, SubmitNodeCollector submitNodeCollector, PoseStack poseStack, Model<? super S> model, S state, int light, int overlayCoords, int tint, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         if (crumblingOverlay == null)
             return false;
 
         BlockEntityExt blockEntityExt = (BlockEntityExt)blockEntity;
         if (blockEntityExt.renderingMode() == RenderingMode.TERRAIN && blockEntityExt.terrainMeshReady()) {
-            OverlayNodeCollection.submitCrumblingOverlay(poseStack, model, state, light, overlayCoords, tint, crumblingOverlay);
+            submitCrumblingOverlay(submitNodeCollector, poseStack, model, state, light, overlayCoords, tint, crumblingOverlay);
             return true;
         }
         return false;
     }
 
-    public static <S> void submitCrumblingOverlay(PoseStack poseStack, Model<? super S> model, S state, int light, int overlayCoords, int tint, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
-        OverlayNodeCollection.submitCrumblingOverlay(poseStack, model, state, light, overlayCoords, tint, crumblingOverlay);
+    public static <S> void submitCrumblingOverlay(SubmitNodeCollector submitNodeCollector, PoseStack poseStack, Model<? super S> model, S state, int light, int overlayCoords, int tint, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        SubmitNodeCollection submitNodeCollection = getSubmitNodeCollection(submitNodeCollector);
+        if (submitNodeCollection == null) return;
+
+        submitNodeCollection.afterTerrain.submit(new ModelFeatureRenderer.Submit<>(
+                ModelBakery.DESTROY_TYPES.get(crumblingOverlay.progress()),
+                poseStack.last().copy(),
+                model,
+                state,
+                light,
+                overlayCoords,
+                tint,
+                null,
+                crumblingOverlay.cameraPose()
+        ));
     }
 
-    public static void renderCrumblingOverlays(MultiBufferSource.BufferSource crumblingBufferSource, PoseStack poseStack) {
-        for (OverlayNodeCollection.OverlaySubmit<?> submit : OverlayNodeCollection.getSubmits()) {
-            renderSubmit(crumblingBufferSource, poseStack, submit);
+    private static SubmitNodeCollection getSubmitNodeCollection(SubmitNodeCollector submitNodeCollector) {
+        if (submitNodeCollector instanceof SubmitNodeCollection submitNodeCollection) {
+            return submitNodeCollection;
         }
 
-        /* clear submits right after we pushed to the buffer (don't wait until end frame) */
-        OverlayNodeCollection.clearSubmits();
-    }
-
-    private static <S> void renderSubmit(MultiBufferSource.BufferSource crumblingBufferSource, PoseStack poseStack, OverlayNodeCollection.OverlaySubmit<S> submit) {
-        poseStack.pushPose();
-        poseStack.last().set(submit.poseStack());
-
-        renderCrumblingOverlay(
-                crumblingBufferSource,
-                submit.crumblingOverlay(),
-                submit.model(),
-                submit.state(),
-                poseStack,
-                submit.lightCoords(),
-                submit.overlayCoords(),
-                submit.tintedColor()
-        );
-
-        poseStack.popPose();
-    }
-
-    private static <S> void renderCrumblingOverlay(MultiBufferSource.BufferSource crumblingBufferSource, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, Model<? super S> model, S state, PoseStack poseStack, int i, int j, int k) {
-        VertexConsumer crumblingBuffer = new SheetedDecalTextureGenerator(
-                crumblingBufferSource.getBuffer(ModelBakery.DESTROY_TYPES.get(crumblingOverlay.progress())),
-                crumblingOverlay.cameraPose(),
-                1.0F
-        );
-
-        if (state != null) model.setupAnim(state);
-
-        model.renderToBuffer(poseStack, crumblingBuffer, i, j, k);
+        OrderedSubmitNodeCollector orderedSubmitNodeCollector = submitNodeCollector.order(0);
+        return orderedSubmitNodeCollector instanceof SubmitNodeCollection submitNodeCollection ? submitNodeCollection : null;
     }
 }

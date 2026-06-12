@@ -6,7 +6,7 @@ import betterblockentities.client.render.immediate.blockentity.manager.Instanced
 
 /* minecraft */
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 
 /* mixin */
@@ -27,7 +27,7 @@ public class CampfireBlockEntityMixin {
         ext.optKind(InstancedBlockEntityManager.OptKind.CAMPFIRE);
 
         ext.supportedBlockEntity(
-            blockEntity.getType() == BlockEntityType.CAMPFIRE
+            blockEntity.getType() == BlockEntityTypes.CAMPFIRE
         );
     }
 }

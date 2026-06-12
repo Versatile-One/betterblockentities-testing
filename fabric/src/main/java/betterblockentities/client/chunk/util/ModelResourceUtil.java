@@ -4,7 +4,6 @@ package betterblockentities.client.chunk.util;
 import betterblockentities.client.chunk.pipeline.BBEBlockRenderer;
 import betterblockentities.client.gui.config.ConfigCache;
 import betterblockentities.client.gui.option.EnumTypes;
-import betterblockentities.client.model.geometry.GeometryRegistry;
 import betterblockentities.client.render.immediate.blockentity.extentions.BlockEntityExt;
 
 /* local */
@@ -18,9 +17,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.animal.golem.CopperGolemOxidationLevels;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.ChestType;
 
@@ -40,35 +38,6 @@ public class ModelResourceUtil {
             }
         }
         return ModelLayers.CHEST;
-    }
-
-    public static ModelLayerLocation getSignLayer(BlockState state) {
-        final boolean isWallSign = !state.hasProperty(BlockStateProperties.ROTATION_16);
-
-        if (isWallSign) {
-            return GeometryRegistry.SupportedVanillaModelLayers.SIGN_WALL;
-        }
-        return GeometryRegistry.SupportedVanillaModelLayers.SIGN_STANDING;
-    }
-
-    public static ModelLayerLocation getHangingSignLayer(BlockState state) {
-        final boolean isWall = !state.hasProperty(CeilingHangingSignBlock.ATTACHED);
-        final boolean attached = !isWall && state.getValue(CeilingHangingSignBlock.ATTACHED);
-
-        if (isWall) {
-            return GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_WALL;
-        }
-        else if (attached) {
-            return GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_CEILING_MIDDLE;
-        }
-        return GeometryRegistry.SupportedVanillaModelLayers.HANGING_SIGN_CEILING;
-    }
-
-    public static ModelLayerLocation getBedLayer(BlockState state) {
-        if (state.getValue(BedBlock.PART) == BedPart.HEAD) {
-            return ModelLayers.BED_HEAD;
-        }
-        return ModelLayers.BED_FOOT;
     }
 
     public static ModelLayerLocation getBannerFlagLayer(boolean wall) {
@@ -118,7 +87,7 @@ public class ModelResourceUtil {
             addBase = false;
         }
 
-        boolean sw = blockEntity.is(BlockEntityType.SHULKER_BOX);
+        boolean sw = blockEntity.is(BlockEntityTypes.SHULKER_BOX);
 
         if (addBase) {
             collectSingleModelParts(dst, pairs.get(sw ? "base" : "bottom"), random);

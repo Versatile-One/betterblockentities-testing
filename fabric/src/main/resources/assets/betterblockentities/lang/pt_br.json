@@ -22,9 +22,6 @@
   "bbe.config.storage.main.optimize.bell": "Otimizar Sino",
   "bbe.config.storage.main.optimize.bell.tooltip": "Usado para Ativar ou Desativar as otimizações de Sino",
 
-  "bbe.config.storage.main.optimize.bed": "Otimizar Cama",
-  "bbe.config.storage.main.optimize.bed.tooltip": "Usado para Ativar ou Desativar as otimizações de Cama",
-
   "bbe.config.storage.main.animation.chest": "Animar Baú",
   "bbe.config.storage.main.animation.chest.tooltip": "Usado para Ativar ou Desativar as animações de Baú",
 

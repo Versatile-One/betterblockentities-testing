@@ -348,25 +348,6 @@ public class SodiumConfigBuilder implements ConfigEntryPoint {
         );
 
         BBEPage.addOptionGroup(builder.createOptionGroup()
-            .addOption(
-                    builder.createBooleanOption(Identifier.parse("bbe:optimize.bed"))
-                            .setName(Component.translatable("bbe.config.storage.main.optimize.bed"))
-                            .setTooltip(Component.translatable("bbe.config.storage.main.optimize.bed.tooltip"))
-                            .setDefaultValue(true)
-                            .setImpact(OptionImpact.HIGH)
-                            .setBinding(
-                                    value -> BBE.GlobalScope.CONFIG.MAIN.setOption("optimize.bed", value),
-                                    () -> (boolean) BBE.GlobalScope.CONFIG.MAIN.getOption("optimize.bed").getValue()
-                            )
-                            .setEnabledProvider(c ->
-                                    c.readBooleanOption(Identifier.parse("bbe:master")), Identifier.parse("bbe:master")
-                            )
-                            .setFlags(OptionFlag.REQUIRES_ASSET_RELOAD)
-                            .setStorageHandler(this.saveMainConfigStorageObject)
-            )
-        );
-
-        BBEPage.addOptionGroup(builder.createOptionGroup()
                 .addOption(
                         builder.createBooleanOption(Identifier.parse("bbe:optimize.copper_golem_statue"))
                                 .setName(Component.translatable("bbe.config.storage.main.optimize.copper_golem_statue"))
@@ -432,7 +413,7 @@ public class SodiumConfigBuilder implements ConfigEntryPoint {
                                             Component.translatable("bbe.config.storage.main.misc.update_scheduler.tooltip_notavailable") :
                                             Component.translatable("bbe.config.storage.main.misc.update_scheduler.tooltip")
                             )
-                            .setDefaultValue(EnumTypes.UpdateSchedulerType.SMART)
+                            .setDefaultValue(EnumTypes.UpdateSchedulerType.FAST)
                             .setImpact(OptionImpact.VARIES)
                             .setBinding(
                                     value -> BBE.GlobalScope.CONFIG.MAIN.setOption("misc.update_scheduler", EnumTypes.UpdateSchedulerType.map(value)),

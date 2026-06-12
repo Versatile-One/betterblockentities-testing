@@ -22,9 +22,6 @@
   "bbe.config.storage.main.optimize.bell" :  "Optimize Bell",
   "bbe.config.storage.main.optimize.bell.tooltip" : "Used to toggle bell optimizations ON or OFF",
 
-  "bbe.config.storage.main.optimize.bed" : "Optimize Bed",
-  "bbe.config.storage.main.optimize.bed.tooltip" : "Used to toggle bed optimizations ON or OFF",
-
   "bbe.config.storage.main.optimize.copper_golem_statue" : "Optimize Copper Golem Statue",
   "bbe.config.storage.main.optimize.copper_golem_statue.tooltip" : "Used to toggle copper golem statue optimizations ON or OFF",
 

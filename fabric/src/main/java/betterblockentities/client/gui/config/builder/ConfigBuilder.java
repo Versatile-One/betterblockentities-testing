@@ -17,7 +17,7 @@ public class ConfigBuilder {
         ConfigStorageObject mainStorage = new ConfigStorageObject(ConfigStorageIdentifiers.MAIN);
 
         int defaultBannerGraphics = EnumTypes.BannerGraphicsType.FANCY.ordinal();
-        int defaultUpdateScheduler = EnumTypes.UpdateSchedulerType.SMART.ordinal();
+        int defaultUpdateScheduler = EnumTypes.UpdateSchedulerType.FAST.ordinal();
 
         List<OptionObject<?>> options = new ArrayList<>(List.of(
                 new BooleanOption("optimize.master", true),
@@ -28,7 +28,6 @@ public class ConfigBuilder {
                 new BooleanOption("optimize.decoratedpot", true),
                 new BooleanOption("optimize.banner", true),
                 new BooleanOption("optimize.bell", true),
-                new BooleanOption("optimize.bed", true),
                 new BooleanOption("optimize.copper_golem_statue", true),
                 new BooleanOption("optimize.shelf", true),
                 new BooleanOption("optimize.campfire", true),
